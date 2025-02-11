@@ -1,0 +1,356 @@
+#include <iostream>
+#include <conio.h>
+#include <string>
+#include <ctime>
+#include <cstdlib>
+
+using namespace std;
+
+class Library {
+private:
+    struct Node {
+        int id;
+        string name, author, publisher;
+        bool isIssued;
+        string issuedToName;
+        string issuedToSection;
+        string issuedToContact;
+        time_t issueDate;
+        Node* next_add;
+    };
+
+public:
+    Node* head = NULL;
+    void menu();
+    void insert_record();
+    void search_record();
+    void update_record();
+    void del_record();
+    void show_record();
+    void sort();
+    void issue_book();
+    void return_book();
+    void load_data();
+    void calculate_deadline(time_t issueDate);
+};
+
+void Library::menu() {
+    while (true) {
+        system("cls");
+        int choice;
+        cout << "\n\n\t\t\t===========Library Management System=================";
+        cout << "\n\n 1. Insert New Record";
+        cout << "\n\n 2. Search Record";
+        cout << "\n\n 3. Update Record";
+        cout << "\n\n 4. Delete Record";
+        cout << "\n\n 5. Show all Records";
+        cout << "\n\n 6. Issue Book";
+        cout << "\n\n 7. Return Book";
+        cout << "\n\n 8. Exit";
+        cout << "\n\n Enter your choice: ";
+        cin >> choice;
+        switch (choice) {
+        case 1:
+            insert_record();
+            break;
+        case 2:
+            search_record();
+            break;
+        case 3:
+            update_record();
+            break;
+        case 4:
+            del_record();
+            break;
+        case 5:
+            sort();
+            show_record();
+            break;
+        case 6:
+            issue_book();
+            break;
+        case 7:
+            return_book();
+            break;
+        case 8:
+            exit(0);
+        default:
+            cout << "\n\n Invalid choice..Please Try Again......";
+        }
+        getch();
+    }
+}
+
+void Library::insert_record() {
+    system("cls");
+    Node* new_node = new Node;
+    cout << "\n\n\t\t\t=======Insert New Record=======";
+    cout << "\n\n Book ID: ";
+    cin >> new_node->id;
+    cout << "\n\n Book Name: ";
+    cin.ignore();
+    getline(cin, new_node->name);
+    cout << "\n\n Author Name: ";
+    getline(cin, new_node->author);
+    cout << "\n\n Publisher Name: ";
+    getline(cin, new_node->publisher);
+    new_node->isIssued = false;
+    new_node->issueDate = 0;
+    new_node->next_add = NULL;
+
+    if (head == NULL) {
+        head = new_node;
+    }
+    else {
+        Node* ptr = head;
+        while (ptr->next_add != NULL) {
+            ptr = ptr->next_add;
+        }
+        ptr->next_add = new_node;
+    }
+    cout << "\n\n\t\t\tNew Record Inserted Successfully...";
+}
+
+void Library::search_record() {
+    system("cls");
+    if (head == NULL) {
+        cout << "\n\n The Library is Empty...";
+    }
+    else {
+        int id;
+        cout << "\n\n\t\t\t=======Search Record=======";
+        cout << "\n\n Book ID: ";
+        cin >> id;
+        Node* ptr = head;
+        while (ptr != NULL) {
+            if (ptr->id == id) {
+                cout << "\n\n Book ID: " << ptr->id;
+                cout << "\n\n Book Name: " << ptr->name;
+                cout << "\n\n Author Name: " << ptr->author;
+                cout << "\n\n Publisher Name: " << ptr->publisher;
+                cout << "\n\n Status: " << (ptr->isIssued ? "Issued" : "Available");
+                if (ptr->isIssued) {
+                    cout << "\n\n Issued To: " << ptr->issuedToName;
+                    cout << "\n\n Section: " << ptr->issuedToSection;
+                    cout << "\n\n Contact: " << ptr->issuedToContact;
+                    calculate_deadline(ptr->issueDate);
+                }
+                return;
+            }
+            ptr = ptr->next_add;
+        }
+        cout << "\n\n No Record Found...";
+    }
+}
+
+void Library::update_record() {
+    system("cls");
+    if (head == NULL) {
+        cout << "\n\n The Library is Empty...";
+    }
+    else {
+        int id;
+        cout << "\n\n\t\t\t=======Update Record=======";
+        cout << "\n\n Book ID: ";
+        cin >> id;
+        Node* ptr = head;
+        while (ptr != NULL) {
+            if (ptr->id == id) {
+                cout << "\n\n Book ID: " << ptr->id;
+                cout << "\n\n Update Book Name: ";
+                cin.ignore();
+                getline(cin, ptr->name);
+                cout << "\n\n Update Author Name: ";
+                getline(cin, ptr->author);
+                cout << "\n\n Update Publisher Name: ";
+                getline(cin, ptr->publisher);
+                cout << "\n\n\t\t\t Record Updated Successfully...";
+                return;
+            }
+            ptr = ptr->next_add;
+        }
+        cout << "\n\n No Record Found...";
+    }
+}
+
+void Library::del_record() {
+    system("cls");
+    if (head == NULL) {
+        cout << "\n\n The Library is Empty...";
+    }
+    else {
+        int id;
+        cout << "\n\n\t\t\t=======Delete Record=======";
+        cout << "\n\n Book ID: ";
+        cin >> id;
+        Node* ptr = head;
+        Node* prev = NULL;
+        while (ptr != NULL) {
+            if (ptr->id == id) {
+                if (prev == NULL) {
+                    head = ptr->next_add;
+                }
+                else {
+                    prev->next_add = ptr->next_add;
+                }
+                delete ptr;
+                cout << "\n\n\t\t\t Record Deleted Successfully...";
+                return;
+            }
+            prev = ptr;
+            ptr = ptr->next_add;
+        }
+        cout << "\n\n No Record Found...";
+    }
+}
+
+void Library::show_record() {
+    system("cls");
+    if (head == NULL) {
+        cout << "\n\n The Library is Empty...";
+    }
+    else {
+        Node* ptr = head;
+        cout << "\n\n\t\t\t=======All Records=======";
+        while (ptr != NULL) {
+            cout << "\n\n Book ID: " << ptr->id;
+            cout << "\n\n Book Name: " << ptr->name;
+            cout << "\n\n Author Name: " << ptr->author;
+            cout << "\n\n Publisher Name: " << ptr->publisher;
+            cout << "\n\n Status: " << (ptr->isIssued ? "Issued" : "Available");
+            if (ptr->isIssued) {
+                cout << "\n\n Issued To: " << ptr->issuedToName;
+                cout << "\n\n Section: " << ptr->issuedToSection;
+                cout << "\n\n Contact: " << ptr->issuedToContact;
+            }
+            cout << "\n\n============================";
+            ptr = ptr->next_add;
+        }
+    }
+}
+
+void Library::sort() {
+    // Simple sorting based on book ID (can be optimized with better algorithms)
+    if (head == NULL)
+        return;
+
+    Node* i = head;
+    while (i != NULL) {
+        Node* j = i->next_add;
+        while (j != NULL) {
+            if (i->id > j->id) {
+                swap(i->id, j->id);
+                swap(i->name, j->name);
+                swap(i->author, j->author);
+                swap(i->publisher, j->publisher);
+                swap(i->isIssued, j->isIssued);
+                swap(i->issueDate, j->issueDate);
+                swap(i->issuedToName, j->issuedToName);
+                swap(i->issuedToSection, j->issuedToSection);
+                swap(i->issuedToContact, j->issuedToContact);
+            }
+            j = j->next_add;
+        }
+        i = i->next_add;
+    }
+}
+
+void Library::issue_book() {
+    system("cls");
+    if (head == NULL) {
+        cout << "\n\n The Library is Empty...";
+    }
+    else {
+        int id;
+        cout << "\n\n\t\t\t=======Issue Book=======";
+        cout << "\n\n Book ID: ";
+        cin >> id;
+        Node* ptr = head;
+        while (ptr != NULL) {
+            if (ptr->id == id) {
+                if (ptr->isIssued) {
+                    cout << "\n\n The book is already issued and currently unavailable.";
+                }
+                else {
+                    cout << "\n\n Enter your name: ";
+                    cin.ignore();
+                    getline(cin, ptr->issuedToName);
+                    cout << "\n\n Enter your section: ";
+                    getline(cin, ptr->issuedToSection);
+                    cout << "\n\n Enter your contact number: ";
+                    getline(cin, ptr->issuedToContact);
+                    ptr->isIssued = true;
+                    time(&ptr->issueDate);
+                    cout << "\n\n The book has been issued successfully. Please return within 15 days.";
+                }
+                return;
+            }
+            ptr = ptr->next_add;
+        }
+        cout << "\n\n No Record Found...";
+    }
+}
+
+void Library::return_book() {
+    system("cls");
+    if (head == NULL) {
+        cout << "\n\n The Library is Empty...";
+    }
+    else {
+        int id;
+        string name, section, contact;
+        cout << "\n\n\t\t\t=======Return Book=======";
+        cout << "\n\n Book ID: ";
+        cin >> id;
+        cout << "\n\n Enter your name: ";
+        cin.ignore();
+        getline(cin, name);
+        cout << "\n\n Enter your section: ";
+        getline(cin, section);
+        cout << "\n\n Enter your contact number: ";
+        getline(cin, contact);
+
+        Node* ptr = head;
+        while (ptr != NULL) {
+            if (ptr->id == id) {
+                if (!ptr->isIssued) {
+                    cout << "\n\n The book is already available.";
+                }
+                else if (ptr->issuedToName == name && ptr->issuedToSection == section && ptr->issuedToContact == contact) {
+                    ptr->isIssued = false;
+                    ptr->issueDate = 0;
+                    ptr->issuedToName = "";
+                    ptr->issuedToSection = "";
+                    ptr->issuedToContact = "";
+                    cout << "\n\n The book has been returned successfully.";
+                }
+                else {
+                    cout << "\n\n The details provided do not match the record.";
+                }
+                return;
+            }
+            ptr = ptr->next_add;
+        }
+        cout << "\n\n No Record Found...";
+    }
+}
+
+void Library::calculate_deadline(time_t issueDate) {
+    time_t now;
+    time(&now);
+    double seconds = difftime(now, issueDate);
+    int days = seconds / (60 * 60 * 24);
+    int remaining_days = 15 - days;
+    if (remaining_days > 0) {
+        cout << "\n\n Days left for return: " << remaining_days;
+    }
+    else {
+        cout << "\n\n The book is overdue by " << -remaining_days << " days.";
+    }
+}
+
+int main() {
+    Library obj;
+    obj.menu();
+    return 0;
+}
