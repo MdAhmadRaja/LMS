@@ -1,10 +1,10 @@
 # LMS
 
-#Library Management System (C++)
-##Project Overview
+# Library Management System (C++)
+## Project Overview
 The Library Management System is a console-based application developed in C++ to help manage books efficiently within a library. It provides functionalities to add, search, update, delete, and issue books, ensuring smooth operations for both library staff and users. The program follows a menu-driven approach, allowing users to interact with the system via a command-line interface.
 
-#Functionalities Implemented
+## Functionalities Implemented
 The system offers the following key features:
 
 Insert New Record – Allows users to add new books to the library database by entering book details.
@@ -15,7 +15,7 @@ Show All Records – Displays the complete list of books available in the librar
 Issue Book – Facilitates book issuance to users by updating the book’s availability status.
 Return Book – Allows users to return an issued book, updating its availability in the system.
 Exit – Provides an option to close the program.
-#Technology Used
+## Technology Used
 Programming Language: C++
 Development Environment: Dev-C++ (as seen in the image)
 Concepts Used: File handling, object-oriented programming (OOP), data structures (arrays, classes, and functions).
